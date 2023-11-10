@@ -2,15 +2,20 @@ from tkinter import *
 import string
 window = Tk()
 window.geometry('700x500')
-message = False
+text_present = False
 def has_special_chars(word):
     for i in word:
         if i in string.punctuation:
             return True
     else:
         return False
+def remove_text(windowname , time , variable=type(Message)):
+    def remove():
+        variable['text'] = ''
+    windowname.after(time, remove)
+
 def checker():
-    global message
+    global text_present
     username = entry1.get()
     pass_flag = True
     counter = 0
@@ -19,37 +24,44 @@ def checker():
             counter += 1
     if len(username) < 3 or len(username) > 20:
         pass_flag = False
-        if message:
-            message['text'] = 'Username must be between 3-20 chars long'
+        if text_present:
+            invalid_message['text'] = 'Username must be between 3-20 chars long'
         else:
-            message = Message(text = 'Username must be between 3-20 chars long' , font = 24 , foreground = 'red' , width = 350)
-            message.pack()
+            invalid_message = Message(text = 'Username must be between 3-20 chars long' , font = 24 , foreground = 'red' , width = 350)
+            invalid_message.pack()
+            text_present = invalid_message
     elif has_special_chars(username) and pass_flag:
         pass_flag = False
-        if message:
-            message['text'] = 'Username must not contain special chars'
+        if text_present:
+            invalid_message['text'] = 'Username must not contain special chars'
         else:
-            message = Message(text = 'Username must not contain special chars' , font = 24 , foreground = 'red' , width = 350)
-            message.pack()
+            invalid_message = Message(text = 'Username must not contain special chars' , font = 24 , foreground = 'red' , width = 350)
+            invalid_message.pack()
+            text_present = invalid_message
     elif counter == len(username):
         pass_flag = False
-        if message:
-            message['text'] = 'Username may contain sensitive information'
+        if text_present:
+            invalid_message['text'] = 'Username may contain sensitive information'
         else:
-            message = Message(text = 'Username may contain sensitive information' , font = 24 , foreground = 'red' , width = 350)
-            message.pack()
+            invalid_message = Message(text = 'Username may contain sensitive information' , font = 24 , foreground = 'red' , width = 350)
+            invalid_message.pack()
+            text_present = invalid_message
+    if not(pass_flag):
+        remove_text(window , 1500 , invalid_message)
     if pass_flag:
         window.destroy()
         def pass_checker():
-            global message
+            global text_present
             password = entry2.get()
             re_password = entry3.get()
             if password != re_password:
-                if message:
+                if text_present:
                     message['text'] = 'Passwords are not matching'
                 else:
                     message = Message(text = 'Passwords are not matching' , font = 24 , foreground = 'red' , width = 350)
                     message.pack()
+                    text_present = message
+                remove_text(window , 1500 , invalid_message)
             else:
                 root.destroy()
         root = Tk()
