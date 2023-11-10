@@ -86,3 +86,64 @@ entry1.pack()
 button = Button(text = 'Enter' , font = 24 , width = 10 , command = checker)
 button.pack(pady = 10)
 window.mainloop()
+
+
+
+debuggging
+
+
+
+from tkinter import *
+import string
+window = Tk()
+window.geometry('700x500')
+text_present = False
+def has_special_chars(word):
+    for i in word:
+        if i in string.punctuation:
+            return True
+    else:
+        return False
+def place_error_label(window_name):
+    error_label = Label(window_name , text = 'Nothing')
+    error_label.pack()
+    return error_label
+def confirm():
+    global text_present
+    username = username_box.get()
+    def checker(username):
+        pass_flag = True
+        error_string = False
+        counter = 0 
+        for i in username:
+            if i in string.digits:
+                counter += 1
+        if len(username) < 3 or len(username) > 20:
+            pass_flag = False
+            error_string = 'Username must be between 3-20 chars long'
+        elif has_special_chars(username) and pass_flag:
+            pass_flag = False
+            error_string = 'Username must not contain special chars'
+        elif counter == len(username):
+            pass_flag = False
+            error_string = 'Username may contain sensitive information'
+        return pass_flag , error_string
+    pass_flag , error_string = checker(username)
+    if pass_flag == False and error_string:
+        if not(text_present):
+            error_label['text'] = f'{error_string}'
+            error_label.pack()
+            text_present = True
+        else:
+            error_label['text'] = f'{error_string}'
+    else:
+        window.destroy()
+register_label = Label(text = 'Register system' , font = 24)
+register_label.pack()
+username_label = Label(text = 'Username:' , font = 24)
+username_label.pack()
+username_box = Entry()
+username_box.pack()
+confirm_button = Button(text = 'Confirm' , font = 24 , command = confirm)
+confirm_button.pack()
+window.mainloop()
